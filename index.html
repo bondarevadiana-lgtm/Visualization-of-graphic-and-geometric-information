@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>PA#1</title>
+<style>
+body {
+    background-color: #f7f7f7; 
+    color: #333333; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    min-height: 100vh;
+    margin: 0;
+}
+
+h2 {
+    color: #007bff; 
+    border-bottom: 2px solid #cccccc;
+    padding-bottom: 3px;
+    margin-top: 5px;
+    font-weight: 300; 
+    margin-bottom: 0;
+}
+
+#message {
+    color: #28a745;
+    margin-bottom: 4px;
+    padding: 10px 15px;
+    border: 1px solid #28a745;
+    background-color: #e2f0e4;
+    border-radius: 4px;
+}
+
+#canvas-holder {
+    padding: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+#webglcanvas {
+    background-color: #ffffff; 
+    display: block;
+    border: 3px solid #007bff; 
+}
+</style>
+
+<script src="./Utils/trackball-rotator.js"></script>
+<script src="./Utils/m4.js"></script>
+<script src="./shader.gpu"></script>
+<script src="./Model.js"></script>
+<script src="./main.js"></script>
+
+</head>
+<body onload="init()">
+
+<h2>Surface of revolution of parabola of arbitrary position. Варіант 1</h2>
+
+<p id="message">Drag your mouse on the cube to rotate it.<br>
+(On a touch screen, you can use your finger.)</p>
+
+
+<div id="canvas-holder">
+   <canvas width="800" height="800" id="webglcanvas" style="background-color:red"></canvas>
+</div>
+
+
+</body></html>
