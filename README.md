@@ -1,4 +1,3 @@
-# Visualization-of-graphic-and-geometric-information
 
 # Visualization of graphic and geometric information
 
@@ -13,13 +12,13 @@
 
 ---
 
-###  ЛР2 — ...
+###  LR2 — ...
 
 
 
 ---
 
-###  **ЛР3 — ...**
+###  LR3 — ...
 
 
 
