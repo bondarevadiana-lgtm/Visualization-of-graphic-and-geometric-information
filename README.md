@@ -12,8 +12,9 @@
 
 ---
 
-###  LR2 — ...
+###  [LR2](../../tree/lab2)
 
+<img width="997" height="853" alt="image" src="https://github.com/user-attachments/assets/3713a2f9-4bcf-4377-97f6-839dcba7b4c8" />
 
 
 ---
