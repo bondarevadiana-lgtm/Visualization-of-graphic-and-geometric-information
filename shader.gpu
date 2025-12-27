@@ -1,0 +1,92 @@
+// Vertex shader
+const vertexShaderSource = `
+    attribute vec3 aVertex;
+    attribute vec3 aNormal;
+    attribute vec2 aTexCoord;
+    attribute vec3 aTangent;
+    attribute vec3 aBitangent;
+ 
+    uniform mat4 uModelViewProjectionMatrix;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uNormalMatrix;
+
+    uniform vec2 uTexCoordCenter;
+    uniform float uTexCoordScale;
+    uniform float uTexCoordRotation;
+
+    varying vec2 vTexCoord;
+    varying mat3 vTBN;
+    varying vec3 vFragPos;
+
+    void main() {
+        gl_Position = uModelViewProjectionMatrix * vec4(aVertex, 1.0);
+        vFragPos = (uModelViewMatrix * vec4(aVertex, 1.0)).xyz;
+        
+        vec3 t = normalize((uNormalMatrix * vec4(aTangent, 0.0)).xyz);
+        vec3 b = normalize((uNormalMatrix * vec4(aBitangent, 0.0)).xyz);
+        vec3 n = normalize((uNormalMatrix * vec4(aNormal, 0.0)).xyz);
+        vTBN = mat3(t, b, n);
+
+        vec2 texCoord = aTexCoord - uTexCoordCenter;
+        float cos_r = cos(uTexCoordRotation);
+        float sin_r = sin(uTexCoordRotation);
+        mat2 rotationMatrix = mat2(cos_r, -sin_r, sin_r, cos_r);
+        texCoord = rotationMatrix * texCoord;
+        texCoord = texCoord * uTexCoordScale;
+        vTexCoord = texCoord + uTexCoordCenter;
+    }
+`;
+
+// Fragment shader
+const fragmentShaderSource = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+        precision highp float;
+    #else
+        precision mediump float;
+    #endif
+
+    varying vec2 vTexCoord;
+    varying mat3 vTBN;
+    varying vec3 vFragPos;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uViewPosition;
+    uniform bool uDrawAsLight;
+
+    uniform sampler2D uDiffuseMap;
+    uniform sampler2D uSpecularMap;
+    uniform sampler2D uNormalMap;
+
+    void main() {
+        if (uDrawAsLight) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        } else {
+            vec3 normal_ts = texture2D(uNormalMap, vTexCoord).rgb * 2.0 - 1.0;
+            normal_ts = normalize(normal_ts);
+
+            vec3 normal = normalize(vTBN * normal_ts);
+
+            vec3 lightDir = normalize(uLightPosition - vFragPos);
+            vec3 viewDir = normalize(uViewPosition - vFragPos);
+            vec3 halfwayDir = normalize(lightDir + viewDir);
+
+            // Ambient
+            float ambientIntensity = 0.2;
+            vec3 ambientColor = ambientIntensity * vec3(1.0, 1.0, 1.0);
+
+            // Diffuse
+            float diffuseIntensity = max(dot(normal, lightDir), 0.0);
+            vec3 diffuseColor = diffuseIntensity * texture2D(uDiffuseMap, vTexCoord).rgb;
+
+            // Specular
+            float shininess = 32.0;
+            vec3 specularMapColor = texture2D(uSpecularMap, vTexCoord).rgb;
+            float specularMapIntensity = specularMapColor.r; 
+            float specularIntensity = pow(max(dot(normal, halfwayDir), 0.0), shininess) * specularMapIntensity;
+            vec3 specularColor = specularIntensity * vec3(1.0, 1.0, 1.0);
+
+            vec3 finalColor = ambientColor + diffuseColor + specularColor;
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    }
+`;
